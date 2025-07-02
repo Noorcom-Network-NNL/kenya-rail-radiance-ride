@@ -25,22 +25,29 @@ interface VideoPlayerProps {
 export function VideoPlayer({ title, duration, genre, description, onBack }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
+  const [totalDuration, setTotalDuration] = useState(7200);
   const [volume, setVolume] = useState([50]);
   const [isMuted, setIsMuted] = useState(false);
   const [showControls, setShowControls] = useState(true);
   const timeoutRef = useRef<NodeJS.Timeout>();
-
-  // Convert duration string to seconds for demo
-  const totalDuration = 7200; // 2 hours for demo
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (isPlaying) {
-      const interval = setInterval(() => {
-        setCurrentTime(prev => Math.min(prev + 1, totalDuration));
-      }, 1000);
-      return () => clearInterval(interval);
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.play();
+      } else {
+        videoRef.current.pause();
+      }
     }
-  }, [isPlaying, totalDuration]);
+  }, [isPlaying]);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.volume = volume[0] / 100;
+      videoRef.current.muted = isMuted;
+    }
+  }, [volume, isMuted]);
 
   const handleMouseMove = () => {
     setShowControls(true);
@@ -57,24 +64,32 @@ export function VideoPlayer({ title, duration, genre, description, onBack }: Vid
   };
 
   const handleSeek = (value: number[]) => {
-    setCurrentTime(value[0]);
+    if (videoRef.current) {
+      videoRef.current.currentTime = value[0];
+      setCurrentTime(value[0]);
+    }
   };
 
   const handleSkip = (seconds: number) => {
-    setCurrentTime(prev => Math.max(0, Math.min(prev + seconds, totalDuration)));
+    if (videoRef.current) {
+      const newTime = Math.max(0, Math.min(videoRef.current.currentTime + seconds, totalDuration));
+      videoRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
+    }
   };
 
   return (
     <div className="fixed inset-0 bg-black z-50 flex flex-col" onMouseMove={handleMouseMove}>
       {/* Video Area */}
-      <div className="flex-1 bg-gradient-to-b from-railway-navy/20 to-railway-navy/40 flex items-center justify-center relative">
-        <div className="text-center text-white/60">
-          <div className="w-32 h-32 bg-white/10 rounded-full flex items-center justify-center mb-4 mx-auto">
-            <Play className="w-16 h-16" />
-          </div>
-          <p className="text-lg">Video Player Simulation</p>
-          <p className="text-sm opacity-75">Content would play here in actual implementation</p>
-        </div>
+      <div className="flex-1 bg-black flex items-center justify-center relative">
+        <video
+          ref={videoRef}
+          className="w-full h-full object-contain"
+          src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          onTimeUpdate={(e) => setCurrentTime(Math.floor(e.currentTarget.currentTime))}
+          onLoadedMetadata={(e) => setTotalDuration(Math.floor(e.currentTarget.duration))}
+          onEnded={() => setIsPlaying(false)}
+        />
 
         {/* Back Button - Always Visible */}
         <Button
