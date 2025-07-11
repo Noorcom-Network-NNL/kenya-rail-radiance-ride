@@ -18,10 +18,17 @@ const Index = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-railway-navy/80 to-transparent"></div>
         <div className="absolute inset-0 flex items-center justify-center text-center">
-          <div className="max-w-4xl mx-auto px-6">
-            <h1 className="text-4xl lg:text-6xl font-bold text-primary-foreground mb-4 animate-fade-in">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <img 
+              src="/lovable-uploads/be5f9c9f-2c95-4a32-a704-95ea6db9c071.png" 
+              alt="Kenya Railways Logo" 
+              className="h-16 lg:h-20 w-auto animate-fade-in"
+            />
+            <h1 className="text-4xl lg:text-6xl font-bold text-primary-foreground animate-fade-in">
               Kenya Railways
             </h1>
+          </div>
             <p className="text-xl lg:text-2xl text-primary-glow mb-2 animate-fade-in">
               Premium Onboard Entertainment
             </p>
@@ -57,8 +64,12 @@ const Index = () => {
       {/* Footer */}
       <footer className="bg-railway-navy/90 text-primary-foreground py-8 mt-16">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="w-8 h-8 bg-gradient-primary rounded"></div>
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <img 
+              src="/lovable-uploads/be5f9c9f-2c95-4a32-a704-95ea6db9c071.png" 
+              alt="Kenya Railways Logo" 
+              className="h-8 w-auto"
+            />
             <span className="text-xl font-bold">Kenya Railways Corporation</span>
           </div>
           <p className="text-primary-glow/80">
