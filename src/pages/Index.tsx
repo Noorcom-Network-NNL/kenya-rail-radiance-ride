@@ -5,7 +5,7 @@ import { VideoSection } from "@/components/VideoSection";
 import heroImage from "@/assets/hero-entertainment.jpg";
 
 const Index = () => {
-  const [activeSection, setActiveSection] = useState<'music' | 'video'>('music');
+  const [activeSection, setActiveSection] = useState<'music' | 'video'>('video');
 
   return (
     <div className="min-h-screen bg-gradient-elegant">
