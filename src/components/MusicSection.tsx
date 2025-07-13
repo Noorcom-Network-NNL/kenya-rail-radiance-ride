@@ -39,67 +39,31 @@ export function MusicSection() {
   const [currentTrack, setCurrentTrack] = useState<JamendoTrack | null>(null);
   const [loading, setLoading] = useState(false);
   const [selectedGenre, setSelectedGenre] = useState<string>('all');
-  const [freesoundApiKey, setFreesoundApiKey] = useState<string>('');
-  const [activeSource, setActiveSource] = useState<'demo' | 'freesound'>('demo');
+  const [activeSource, setActiveSource] = useState<'freesound'>('freesound');
 
   useEffect(() => {
-    // Load saved API key
-    const savedKey = localStorage.getItem('freesound_api_key');
-    if (savedKey) {
-      setFreesoundApiKey(savedKey);
-    }
+    // Auto-load real tracks on component mount
+    loadFreesoundTracks('all');
   }, []);
-
-  const loadDemoTracks = async (genre: string) => {
-    setLoading(true);
-    try {
-      const jamendoGenre = jamendoGenres[genre as keyof typeof jamendoGenres];
-      const fetchedTracks = await fetchJamendoTracks(jamendoGenre, 20);
-      setTracks(fetchedTracks);
-      if (fetchedTracks.length > 0) {
-        toast({
-          title: `Loaded ${fetchedTracks.length} demo tracks`,
-          description: `${genre === 'all' ? 'All music' : genre} library ready to play`,
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Error loading tracks",
-        description: "Please try again later",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const loadFreesoundTracks = async (genre: string) => {
     setLoading(true);
     try {
-      // Get the specific track limit for this genre
       const trackLimit = genreTrackLimits[genre as keyof typeof genreTrackLimits] || 20;
-      
-      // Use configured API key to fetch tracks
       const fetchedTracks = await fetchFreesoundByGenreWithConfig(genre, trackLimit);
       setTracks(fetchedTracks);
       
       if (fetchedTracks.length > 0) {
         toast({
           title: `Loaded ${fetchedTracks.length} real tracks`,
-          description: `${genre === 'all' ? 'All music' : genre} from Freesound - East African & International`,
-        });
-      } else {
-        toast({
-          title: "No tracks found",
-          description: "Try a different genre or check your connection",
-          variant: "destructive",
+          description: `${genre === 'all' ? 'All music' : genre} - East African & International`,
         });
       }
     } catch (error) {
       console.error('Freesound API error:', error);
       toast({
-        title: "Error loading Freesound tracks",
-        description: "Please check your internet connection and try again.",
+        title: "Error loading tracks",
+        description: "Please check your connection and try again.",
         variant: "destructive",
       });
     } finally {
@@ -107,22 +71,9 @@ export function MusicSection() {
     }
   };
 
-  useEffect(() => {
-    if (activeSource === 'demo') {
-      loadDemoTracks('all');
-    } else if (activeSource === 'freesound') {
-      // Now that we have built-in API credentials, load tracks immediately
-      loadFreesoundTracks('all');
-    }
-  }, [activeSource]);
-
   const handleBrowseGenre = (genreId: string, genreName: string) => {
     setSelectedGenre(genreId);
-    if (activeSource === 'demo') {
-      loadDemoTracks(genreId);
-    } else {
-      loadFreesoundTracks(genreId);
-    }
+    loadFreesoundTracks(genreId);
   };
 
   const handleTrackSelect = (track: JamendoTrack) => {
@@ -136,45 +87,12 @@ export function MusicSection() {
     });
   };
 
-  const handleApiKeyChange = (apiKey: string) => {
-    setFreesoundApiKey(apiKey);
-    if (apiKey && activeSource === 'freesound') {
-      loadFreesoundTracks(selectedGenre);
-    }
-  };
-
   return (
     <div className="space-y-6">
-      <Tabs value={activeSource} onValueChange={(value) => setActiveSource(value as 'demo' | 'freesound')}>
-        <div className="flex items-center justify-between mb-6">
-          <TabsList>
-            <TabsTrigger value="demo">Demo Music</TabsTrigger>
-            <TabsTrigger value="freesound">Freesound.org</TabsTrigger>
-          </TabsList>
-          
-          {activeSource === 'freesound' && (
-            <Button variant="outline" size="sm">
-              <Settings className="h-4 w-4 mr-2" />
-              Configure API
-            </Button>
-          )}
-        </div>
-
-        <TabsContent value="demo" className="space-y-6">
-          <div className="p-4 bg-accent/10 rounded-lg">
-            <p className="text-sm text-muted-foreground">
-              Demo mode with sample tracks. Switch to Freesound.org for real music content.
-            </p>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="freesound" className="space-y-6">
-          <FreesoundConfig 
-            onApiKeyChange={handleApiKeyChange}
-            currentApiKey={freesoundApiKey}
-          />
-        </TabsContent>
-      </Tabs>
+      <div className="p-4 bg-gradient-elegant rounded-lg">
+        <h2 className="text-xl font-semibold mb-2">🎵 Real Music Library</h2>
+        <p className="text-muted-foreground">East African & International music collection from Freesound</p>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         {musicGenres.map((genre) => (
