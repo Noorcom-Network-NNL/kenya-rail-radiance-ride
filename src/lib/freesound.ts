@@ -151,7 +151,14 @@ export async function fetchFreesoundByGenreWithConfig(
   genre: string,
   limit: number = 20
 ): Promise<any[]> {
-  return await fetchFreesoundByGenre(genre, FREESOUND_CONFIG.apiKey, limit);
+  const query = freesoundGenreQueries[genre as keyof typeof freesoundGenreQueries] || 'music';
+  
+  return await searchFreesound({
+    query,
+    filter: 'duration:[30.0 TO 600.0]',
+    sort: 'downloads_desc',
+    page_size: limit
+  }, FREESOUND_CONFIG.apiKey);
 }
 
 // Fetch tracks for curated playlists
