@@ -95,7 +95,7 @@ export const freesoundGenreQueries = {
   'classical': 'piano OR violin OR orchestra OR classical',
   'popular': 'music beat OR african OR pop OR rhythm',
   'rock': 'guitar OR rock OR electric OR drums',
-  'folk': 'traditional OR acoustic OR folk OR world'
+  'folk': 'music acoustic OR music traditional OR music folk'
 };
 
 // Simpler, more reliable playlist queries
