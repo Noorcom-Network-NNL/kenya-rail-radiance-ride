@@ -2,10 +2,30 @@ import { useState } from "react";
 import { EntertainmentNav } from "@/components/EntertainmentNav";
 import { MusicSection } from "@/components/MusicSection";
 import { VideoSection } from "@/components/VideoSection";
+import { AuthForm } from "@/components/AuthForm";
+import { UserProfile } from "@/components/UserProfile";
+import { PlaylistManager } from "@/components/PlaylistManager";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { User, LogIn } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import heroImage from "@/assets/hero-entertainment.jpg";
 
 const Index = () => {
-  const [activeSection, setActiveSection] = useState<'music' | 'video'>('video');
+  const [activeSection, setActiveSection] = useState<'music' | 'video' | 'profile' | 'playlists'>('music');
+  const [showAuth, setShowAuth] = useState(false);
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-elegant flex items-center justify-center">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-elegant">
@@ -57,7 +77,10 @@ const Index = () => {
         />
 
         <div className="animate-fade-in">
-          {activeSection === 'music' ? <MusicSection /> : <VideoSection />}
+          {activeSection === 'music' && <MusicSection />}
+          {activeSection === 'video' && <VideoSection />}
+          {activeSection === 'profile' && user && <UserProfile />}
+          {activeSection === 'playlists' && user && <PlaylistManager />}
         </div>
       </div>
 

@@ -2,7 +2,10 @@ import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Play, Pause, SkipBack, SkipForward, Volume2 } from "lucide-react";
+import { Play, Pause, SkipBack, SkipForward, Volume2, Heart, HeartOff } from "lucide-react";
+import { useAuth } from '@/contexts/AuthContext';
+import { addToListeningHistory, addToFavorites, removeFromFavorites } from '@/lib/firebaseService';
+import { useToast } from '@/hooks/use-toast';
 import type { JamendoTrack } from "@/lib/jamendo";
 
 interface MusicPlayerProps {
@@ -16,7 +19,43 @@ export function MusicPlayer({ track, playlist, onTrackChange }: MusicPlayerProps
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(50);
+  const [isFavorite, setIsFavorite] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  // Track listening history when track finishes
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !track || !user) return;
+
+    const handleEnded = async () => {
+      await addToListeningHistory(user.uid, track.id, track.name, track.artist_name, track.duration);
+    };
+
+    audio.addEventListener('ended', handleEnded);
+    return () => audio.removeEventListener('ended', handleEnded);
+  }, [track, user]);
+
+  const handleFavoriteToggle = async () => {
+    if (!user || !track) return;
+
+    try {
+      if (isFavorite) {
+        await removeFromFavorites(user.uid, track.id);
+        toast({ title: "Removed from favorites" });
+      } else {
+        await addToFavorites(user.uid, track.id);
+        toast({ title: "Added to favorites" });
+      }
+      setIsFavorite(!isFavorite);
+    } catch (error) {
+      toast({
+        title: "Error updating favorites",
+        variant: "destructive",
+      });
+    }
+  };
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -115,6 +154,15 @@ export function MusicPlayer({ track, playlist, onTrackChange }: MusicPlayerProps
             <p className="text-sm text-muted-foreground truncate">{track.artist_name}</p>
             <p className="text-xs text-muted-foreground truncate">{track.album_name}</p>
           </div>
+          {user && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleFavoriteToggle}
+            >
+              {isFavorite ? <Heart className="h-5 w-5 fill-current text-red-500" /> : <HeartOff className="h-5 w-5" />}
+            </Button>
+          )}
         </div>
 
         <div className="space-y-4">
