@@ -91,27 +91,27 @@ export async function searchFreesound(
 
 // Enhanced search queries for different genres with East African and international focus
 export const freesoundGenreQueries = {
-  'all': 'music song melody rhythm',
-  'classical': 'classical music symphony orchestra piano violin cello chamber string quartet concerto sonata',
-  'popular': 'pop music beat rhythm contemporary afrobeat african kwaito amapiano bongo flava taarab benga',
-  'rock': 'rock music guitar electric bass drums metal alternative indie punk classic rock',
-  'folk': 'folk music traditional acoustic world music african traditional east africa kenya tanzania uganda ethiopia'
+  'all': 'music',
+  'classical': 'piano OR violin OR orchestra OR classical',
+  'popular': 'music beat OR african OR pop OR rhythm',
+  'rock': 'guitar OR rock OR electric OR drums',
+  'folk': 'traditional OR acoustic OR folk OR world'
 };
 
-// Curated playlist queries for specific collections
+// Simpler, more reliable playlist queries
 export const freesoundPlaylistQueries = {
-  'Journey Classics': 'classical orchestral symphony travel journey peaceful',
-  'African Rhythms': 'african traditional drums percussion rhythm afrobeat kwaito amapiano',
-  'Relaxing Melodies': 'ambient peaceful calm relaxing meditation soft piano',
-  'Upbeat Travels': 'upbeat energetic travel adventure happy positive rhythm',
-  'Gospel Selections': 'gospel spiritual choir hymn praise worship christian',
-  'Contemporary Hits': 'contemporary modern pop electronic dance current',
-  'Traditional Kenyan': 'kenya kenyan traditional benga taarab folk african heritage',
-  'International Favorites': 'world music international global multicultural diverse',
-  'Peaceful Moments': 'peaceful calm quiet serene meditation ambient nature',
-  'Energetic Beats': 'energetic dance electronic beat rhythm upbeat tempo',
-  'Cultural Heritage': 'traditional cultural heritage folk world ethnic ancient',
-  'Modern Mix': 'modern contemporary electronic pop rock fusion current'
+  'Journey Classics': 'piano classical peaceful',
+  'African Rhythms': 'african drums rhythm',
+  'Relaxing Melodies': 'calm peaceful ambient',
+  'Upbeat Travels': 'upbeat energetic happy',
+  'Gospel Selections': 'gospel choir spiritual',
+  'Contemporary Hits': 'pop modern contemporary',
+  'Traditional Kenyan': 'traditional african folk',
+  'International Favorites': 'world music international',
+  'Peaceful Moments': 'peaceful calm quiet',
+  'Energetic Beats': 'energetic beat dance',
+  'Cultural Heritage': 'traditional cultural folk',
+  'Modern Mix': 'modern electronic pop'
 };
 
 // Genre-specific track limits as requested

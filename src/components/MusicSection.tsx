@@ -50,13 +50,26 @@ export function MusicSection() {
     setLoading(true);
     try {
       const trackLimit = genreTrackLimits[genre as keyof typeof genreTrackLimits] || 20;
-      const fetchedTracks = await fetchFreesoundByGenreWithConfig(genre, trackLimit);
+      let fetchedTracks = await fetchFreesoundByGenreWithConfig(genre, trackLimit);
+      
+      // Fallback: if no tracks found, try with just "music" query
+      if (fetchedTracks.length === 0) {
+        console.log(`No tracks found for ${genre}, trying fallback...`);
+        fetchedTracks = await fetchFreesoundByGenreWithConfig('all', Math.min(trackLimit, 20));
+      }
+      
       setTracks(fetchedTracks);
       
       if (fetchedTracks.length > 0) {
         toast({
           title: `Loaded ${fetchedTracks.length} real tracks`,
           description: `${genre === 'all' ? 'All music' : genre} - East African & International`,
+        });
+      } else {
+        toast({
+          title: "No tracks available",
+          description: "Please check your internet connection",
+          variant: "destructive",
         });
       }
     } catch (error) {
@@ -83,7 +96,14 @@ export function MusicSection() {
   const loadPlaylistTracks = async (playlistName: string) => {
     setLoading(true);
     try {
-      const fetchedTracks = await fetchFreesoundByPlaylist(playlistName, 25);
+      let fetchedTracks = await fetchFreesoundByPlaylist(playlistName, 25);
+      
+      // Fallback: if playlist has no tracks, try general music search
+      if (fetchedTracks.length === 0) {
+        console.log(`No tracks found for playlist ${playlistName}, trying fallback...`);
+        fetchedTracks = await fetchFreesoundByGenreWithConfig('all', 15);
+      }
+      
       setTracks(fetchedTracks);
       
       if (fetchedTracks.length > 0) {
@@ -93,6 +113,12 @@ export function MusicSection() {
         });
         // Auto-play first track
         setCurrentTrack(fetchedTracks[0]);
+      } else {
+        toast({
+          title: "No tracks available",
+          description: "Please check your internet connection",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error('Playlist loading error:', error);
