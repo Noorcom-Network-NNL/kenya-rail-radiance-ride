@@ -76,13 +76,23 @@ export function MusicSection() {
   const loadFreesoundTracks = async (genre: string) => {
     setLoading(true);
     try {
-      // Always try to use the built-in configured API key first
-      const fetchedTracks = await fetchFreesoundByGenreWithConfig(genre, 20);
+      // Get the specific track limit for this genre
+      const trackLimit = genreTrackLimits[genre as keyof typeof genreTrackLimits] || 20;
+      
+      // Use configured API key to fetch tracks
+      const fetchedTracks = await fetchFreesoundByGenreWithConfig(genre, trackLimit);
       setTracks(fetchedTracks);
+      
       if (fetchedTracks.length > 0) {
         toast({
           title: `Loaded ${fetchedTracks.length} real tracks`,
-          description: `${genre === 'all' ? 'All music' : genre} from Freesound`,
+          description: `${genre === 'all' ? 'All music' : genre} from Freesound - East African & International`,
+        });
+      } else {
+        toast({
+          title: "No tracks found",
+          description: "Try a different genre or check your connection",
+          variant: "destructive",
         });
       }
     } catch (error) {
