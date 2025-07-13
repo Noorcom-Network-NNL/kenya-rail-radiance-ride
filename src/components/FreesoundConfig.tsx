@@ -39,18 +39,12 @@ export function FreesoundConfig({ onApiKeyChange, currentApiKey }: FreesoundConf
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Alert>
-          <AlertTriangle className="h-4 w-4" />
-          <AlertDescription>
-            To play real music, you need a free Freesound.org API key. 
-            <a 
-              href="https://freesound.org/help/developers/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 ml-1 text-primary hover:underline"
-            >
-              Get your API key here <ExternalLink className="h-3 w-3" />
-            </a>
+        <Alert className="border-green-500/20 bg-green-500/10">
+          <AlertTriangle className="h-4 w-4 text-green-600" />
+          <AlertDescription className="text-green-700">
+            ✅ Freesound.org API is already configured and ready to use! 
+            The system will automatically load real music content from Freesound's library.
+            You can optionally add your own API key below for additional quota.
           </AlertDescription>
         </Alert>
 

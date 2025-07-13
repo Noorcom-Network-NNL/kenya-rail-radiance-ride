@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Music, Loader2, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { fetchJamendoTracks, jamendoGenres, type JamendoTrack } from "@/lib/jamendo";
-import { fetchFreesoundByGenre } from "@/lib/freesound";
+import { fetchFreesoundByGenre, getConfiguredApiKey, fetchFreesoundByGenreWithConfig } from "@/lib/freesound";
 import { MusicPlayer } from "./MusicPlayer";
 import { TrackList } from "./TrackList";
 import { FreesoundConfig } from "./FreesoundConfig";
@@ -74,18 +74,10 @@ export function MusicSection() {
   };
 
   const loadFreesoundTracks = async (genre: string) => {
-    if (!freesoundApiKey) {
-      toast({
-        title: "API Key Required",
-        description: "Please configure your Freesound API key first",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setLoading(true);
     try {
-      const fetchedTracks = await fetchFreesoundByGenre(genre, freesoundApiKey, 20);
+      // Always try to use the built-in configured API key first
+      const fetchedTracks = await fetchFreesoundByGenreWithConfig(genre, 20);
       setTracks(fetchedTracks);
       if (fetchedTracks.length > 0) {
         toast({
@@ -94,9 +86,10 @@ export function MusicSection() {
         });
       }
     } catch (error) {
+      console.error('Freesound API error:', error);
       toast({
         title: "Error loading Freesound tracks",
-        description: "Check your API key and try again",
+        description: "Please check your internet connection and try again.",
         variant: "destructive",
       });
     } finally {
@@ -107,10 +100,11 @@ export function MusicSection() {
   useEffect(() => {
     if (activeSource === 'demo') {
       loadDemoTracks('all');
-    } else if (activeSource === 'freesound' && freesoundApiKey) {
+    } else if (activeSource === 'freesound') {
+      // Now that we have built-in API credentials, load tracks immediately
       loadFreesoundTracks('all');
     }
-  }, [activeSource, freesoundApiKey]);
+  }, [activeSource]);
 
   const handleBrowseGenre = (genreId: string, genreName: string) => {
     setSelectedGenre(genreId);

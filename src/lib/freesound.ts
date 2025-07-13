@@ -1,5 +1,12 @@
 const FREESOUND_BASE_URL = 'https://freesound.org/apiv2';
 
+// Your Freesound API credentials
+const FREESOUND_CONFIG = {
+  clientId: 'BjGyzsV3nCU7nUbwLDfd',
+  clientSecret: 'unSoc6UHTPibfdI1Lh6ZB22Z8vzXIEL8iPduQfMw',
+  apiKey: 'unSoc6UHTPibfdI1Lh6ZB22Z8vzXIEL8iPduQfMw' // Use client secret as API key
+};
+
 export interface FreesoundTrack {
   id: number;
   name: string;
@@ -104,4 +111,20 @@ export async function fetchFreesoundByGenre(
     sort: 'downloads_desc',
     page_size: limit
   }, apiKey);
+}
+
+// Helper functions to use configured API key
+export function getConfiguredApiKey(): string {
+  return FREESOUND_CONFIG.apiKey;
+}
+
+export async function searchFreesoundWithConfig(search: FreesoundSearch): Promise<any[]> {
+  return await searchFreesound(search, FREESOUND_CONFIG.apiKey);
+}
+
+export async function fetchFreesoundByGenreWithConfig(
+  genre: string,
+  limit: number = 20
+): Promise<any[]> {
+  return await fetchFreesoundByGenre(genre, FREESOUND_CONFIG.apiKey, limit);
 }
