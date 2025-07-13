@@ -92,10 +92,10 @@ export async function searchFreesound(
 // Enhanced search queries for different genres with East African and international focus
 export const freesoundGenreQueries = {
   'all': 'music',
-  'classical': 'piano OR violin OR orchestra OR classical',
-  'popular': 'music pop OR music beat OR music rhythm OR music song',
-  'rock': 'guitar OR rock OR electric OR drums',
-  'folk': 'music acoustic OR music traditional OR music folk'
+  'classical': 'piano',
+  'popular': 'pop',
+  'rock': 'guitar',
+  'folk': 'acoustic'
 };
 
 // Simpler, more reliable playlist queries
@@ -153,12 +153,17 @@ export async function fetchFreesoundByGenreWithConfig(
 ): Promise<any[]> {
   const query = freesoundGenreQueries[genre as keyof typeof freesoundGenreQueries] || 'music';
   
-  return await searchFreesound({
+  console.log(`Searching Freesound for genre: ${genre}, query: ${query}, limit: ${limit}`);
+  
+  const result = await searchFreesound({
     query,
     filter: 'duration:[30.0 TO 600.0]',
     sort: 'downloads_desc',
     page_size: limit
   }, FREESOUND_CONFIG.apiKey);
+  
+  console.log(`Freesound search returned ${result.length} tracks for genre: ${genre}`);
+  return result;
 }
 
 // Fetch tracks for curated playlists
