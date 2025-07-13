@@ -13,7 +13,7 @@ const firebaseConfig = {
   projectId: "kenya-railway-onboard",
   storageBucket: "kenya-railway-onboard.firebasestorage.app",
   messagingSenderId: "542074488011",
-  appId: "1:542074488011:web:19d4a2d0c1afcb8fb7074e"
+  appId: "1:542074488011:web:4a6acc5a228ec2e6b7074e"
 };
 
 // Initialize Firebase
