@@ -93,7 +93,7 @@ export async function searchFreesound(
 export const freesoundGenreQueries = {
   'all': 'music',
   'classical': 'piano OR violin OR orchestra OR classical',
-  'popular': 'music beat OR african OR pop OR rhythm',
+  'popular': 'music pop OR music beat OR music rhythm OR music song',
   'rock': 'guitar OR rock OR electric OR drums',
   'folk': 'music acoustic OR music traditional OR music folk'
 };
