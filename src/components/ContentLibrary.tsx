@@ -52,12 +52,9 @@ export function ContentLibrary() {
   if (selectedContent) {
     return (
       <VideoPlayer
-        title={selectedContent.title}
-        duration={selectedContent.duration}
-        genre={selectedContent.genre}
-        description={selectedContent.description}
-        videoUrl={selectedContent.videoUrl}
+        video={selectedContent}
         onBack={() => setSelectedContent(null)}
+        onVideoChange={(newVideo) => setSelectedContent(newVideo)}
       />
     );
   }
