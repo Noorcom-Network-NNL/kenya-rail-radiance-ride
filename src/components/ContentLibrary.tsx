@@ -13,157 +13,41 @@ import {
   List
 } from "lucide-react";
 import { VideoPlayer } from "./VideoPlayer";
+import { videoLibrary, getVideosByCategory, getFeaturedVideos, trackVideoView, type VideoSource } from "@/lib/videoService";
 
-interface ContentItem {
-  id: string;
-  title: string;
-  duration: string;
-  genre: string;
-  rating: number;
-  year: number;
-  description: string;
-  thumbnail: string;
-  videoUrl: string; // Add video URL field
-  category: 'all' | 'romance' | 'comedy' | 'adventure' | 'cartoon';
-  featured: boolean;
-}
-
-const sampleContent: ContentItem[] = [
-  // Romance Category
-  {
-    id: '1',
-    title: 'Love at Maasai Mara',
-    duration: '110 min',
-    genre: 'Romance',
-    rating: 4.5,
-    year: 2024,
-    description: 'A beautiful love story set against the stunning backdrop of Kenya\'s wildlife.',
-    thumbnail: 'photo-1605810230434-7631ac76ec81',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    category: 'romance',
-    featured: true
-  },
-  {
-    id: '2',
-    title: 'Nairobi Hearts',
-    duration: '95 min',
-    genre: 'Romance',
-    rating: 4.2,
-    year: 2023,
-    description: 'Modern romance in the bustling streets of Nairobi.',
-    thumbnail: 'photo-1526374965328-7f61d4dc18c5',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-    category: 'romance',
-    featured: false
-  },
-  
-  // Comedy Category
-  {
-    id: '3',
-    title: 'Railway Comedy Express',
-    duration: '85 min',
-    genre: 'Comedy',
-    rating: 4.7,
-    year: 2024,
-    description: 'Hilarious adventures aboard the Kenya railway system.',
-    thumbnail: 'photo-1649972904349-6e44c42644a7',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-    category: 'comedy',
-    featured: true
-  },
-  {
-    id: '4',
-    title: 'Kenyan Laughs',
-    duration: '90 min',
-    genre: 'Comedy',
-    rating: 4.4,
-    year: 2023,
-    description: 'A collection of the funniest moments from Kenya.',
-    thumbnail: 'photo-1488590528505-98d2b5aba04b',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-    category: 'comedy',
-    featured: false
-  },
-
-  // Adventure Category
-  {
-    id: '5',
-    title: 'Safari Adventure',
-    duration: '120 min',
-    genre: 'Adventure',
-    rating: 4.8,
-    year: 2024,
-    description: 'Thrilling adventures in the heart of the African wilderness.',
-    thumbnail: 'photo-1531297484001-80022131f5a1',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
-    category: 'adventure',
-    featured: true
-  },
-  {
-    id: '6',
-    title: 'Mount Kenya Expedition',
-    duration: '105 min',
-    genre: 'Adventure',
-    rating: 4.6,
-    year: 2023,
-    description: 'Daring mountain climbing adventure on Kenya\'s highest peak.',
-    thumbnail: 'photo-1605810230434-7631ac76ec81',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
-    category: 'adventure',
-    featured: true
-  },
-
-  // Cartoon Category
-  {
-    id: '7',
-    title: 'Simba\'s Railway Journey',
-    duration: '75 min',
-    genre: 'Animation',
-    rating: 4.9,
-    year: 2024,
-    description: 'Animated adventure of animals traveling on the Kenya railway.',
-    thumbnail: 'photo-1526374965328-7f61d4dc18c5',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
-    category: 'cartoon',
-    featured: true
-  },
-  {
-    id: '8',
-    title: 'Kenya Kids Adventures',
-    duration: '60 min',
-    genre: 'Animation',
-    rating: 4.7,
-    year: 2023,
-    description: 'Fun animated stories for children about Kenyan culture.',
-    thumbnail: 'photo-1649972904349-6e44c42644a7',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4',
-    category: 'cartoon',
-    featured: false
-  }
-];
+// Using VideoSource from videoService
+type ContentItem = VideoSource;
 
 export function ContentLibrary() {
   const [selectedContent, setSelectedContent] = useState<ContentItem | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'romance' | 'comedy' | 'adventure' | 'cartoon'>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
+  // Handle video selection and tracking
+  const handleVideoSelect = async (content: ContentItem) => {
+    setSelectedContent(content);
+    await trackVideoView(content.id);
+  };
+
   const categories = [
-    { id: 'all', name: 'All', count: sampleContent.length },
-    { id: 'romance', name: 'Romance', count: sampleContent.filter(c => c.category === 'romance').length },
-    { id: 'comedy', name: 'Comedy', count: sampleContent.filter(c => c.category === 'comedy').length },
-    { id: 'adventure', name: 'Adventure', count: sampleContent.filter(c => c.category === 'adventure').length },
-    { id: 'cartoon', name: 'Cartoon', count: sampleContent.filter(c => c.category === 'cartoon').length },
+    { id: 'all', name: 'All', count: videoLibrary.length },
+    { id: 'romance', name: 'Romance', count: videoLibrary.filter(c => c.category === 'romance').length },
+    { id: 'comedy', name: 'Comedy', count: videoLibrary.filter(c => c.category === 'comedy').length },
+    { id: 'adventure', name: 'Adventure', count: videoLibrary.filter(c => c.category === 'adventure').length },
+    { id: 'cartoon', name: 'Cartoon', count: videoLibrary.filter(c => c.category === 'cartoon').length },
   ];
 
-  const filteredContent = sampleContent.filter(item => {
+  // Filter content based on search and category
+  const allContent = getVideosByCategory(selectedCategory);
+  const filteredContent: ContentItem[] = allContent.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.genre.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+                         item.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesSearch;
   });
 
-  const featuredContent = sampleContent.filter(item => item.featured);
+  // Get featured content
+  const featuredContent = getFeaturedVideos();
 
   if (selectedContent) {
     return (
@@ -219,7 +103,7 @@ export function ContentLibrary() {
                 key={category.id}
                 variant={selectedCategory === category.id ? 'premium' : 'outline'}
                 size="sm"
-                onClick={() => setSelectedCategory(category.id)}
+                onClick={() => setSelectedCategory(category.id as 'all' | 'romance' | 'comedy' | 'adventure' | 'cartoon')}
                 className="text-sm"
               >
                 {category.name} ({category.count})
@@ -244,7 +128,7 @@ export function ContentLibrary() {
                 <Card
                   key={item.id}
                   className="group bg-card/50 border-primary/10 hover:bg-card/70 transition-all duration-300 cursor-pointer hover:scale-105"
-                  onClick={() => setSelectedContent(item)}
+                  onClick={() => handleVideoSelect(item)}
                 >
                   <div className="relative">
                     <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 rounded-t-lg flex items-center justify-center">
@@ -296,7 +180,7 @@ export function ContentLibrary() {
                 className={`group bg-card/50 border-primary/10 hover:bg-card/70 transition-all duration-300 cursor-pointer hover:scale-105 ${
                   viewMode === 'list' ? 'flex flex-row' : ''
                 }`}
-                onClick={() => setSelectedContent(item)}
+                onClick={() => handleVideoSelect(item)}
               >
                 <div className={`relative ${viewMode === 'list' ? 'w-32 h-20' : 'aspect-video'}`}>
                   <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center">
