@@ -23,82 +23,113 @@ interface ContentItem {
   year: number;
   description: string;
   thumbnail: string;
-  category: 'movie' | 'documentary' | 'series' | 'local';
+  category: 'all' | 'romance' | 'comedy' | 'adventure' | 'cartoon';
   featured: boolean;
 }
 
 const sampleContent: ContentItem[] = [
+  // Romance Category
   {
     id: '1',
-    title: 'Kenya Safari Chronicles',
-    duration: '85 min',
-    genre: 'Documentary',
-    rating: 4.8,
+    title: 'Love at Maasai Mara',
+    duration: '110 min',
+    genre: 'Romance',
+    rating: 4.5,
     year: 2024,
-    description: 'Explore Kenya\'s magnificent wildlife and conservation efforts in this stunning documentary.',
+    description: 'A beautiful love story set against the stunning backdrop of Kenya\'s wildlife.',
     thumbnail: 'photo-1605810230434-7631ac76ec81',
-    category: 'documentary',
+    category: 'romance',
     featured: true
   },
   {
     id: '2',
-    title: 'Mombasa Express',
-    duration: '110 min',
-    genre: 'Drama',
-    rating: 4.5,
+    title: 'Nairobi Hearts',
+    duration: '95 min',
+    genre: 'Romance',
+    rating: 4.2,
     year: 2023,
-    description: 'A gripping tale of love and adventure set against the backdrop of the historic railway.',
+    description: 'Modern romance in the bustling streets of Nairobi.',
     thumbnail: 'photo-1526374965328-7f61d4dc18c5',
-    category: 'movie',
-    featured: true
+    category: 'romance',
+    featured: false
   },
+  
+  // Comedy Category
   {
     id: '3',
-    title: 'Cultural Heritage of Kenya',
-    duration: '60 min',
-    genre: 'Educational',
-    rating: 4.6,
+    title: 'Railway Comedy Express',
+    duration: '85 min',
+    genre: 'Comedy',
+    rating: 4.7,
     year: 2024,
-    description: 'Discover the rich cultural traditions and heritage of Kenya\'s diverse communities.',
+    description: 'Hilarious adventures aboard the Kenya railway system.',
     thumbnail: 'photo-1649972904349-6e44c42644a7',
-    category: 'documentary',
-    featured: false
+    category: 'comedy',
+    featured: true
   },
   {
     id: '4',
-    title: 'Railway Stories',
-    duration: '45 min/ep',
-    genre: 'Series',
-    rating: 4.7,
-    year: 2024,
-    description: 'Historical accounts and modern developments of Kenya\'s railway system.',
-    thumbnail: 'photo-1488590528505-98d2b5aba04b',
-    category: 'series',
-    featured: true
-  },
-  {
-    id: '5',
-    title: 'Modern Nairobi',
-    duration: '75 min',
-    genre: 'Documentary',
+    title: 'Kenyan Laughs',
+    duration: '90 min',
+    genre: 'Comedy',
     rating: 4.4,
     year: 2023,
-    description: 'The transformation of Nairobi into a modern African metropolis.',
-    thumbnail: 'photo-1531297484001-80022131f5a1',
-    category: 'documentary',
+    description: 'A collection of the funniest moments from Kenya.',
+    thumbnail: 'photo-1488590528505-98d2b5aba04b',
+    category: 'comedy',
     featured: false
+  },
+
+  // Adventure Category
+  {
+    id: '5',
+    title: 'Safari Adventure',
+    duration: '120 min',
+    genre: 'Adventure',
+    rating: 4.8,
+    year: 2024,
+    description: 'Thrilling adventures in the heart of the African wilderness.',
+    thumbnail: 'photo-1531297484001-80022131f5a1',
+    category: 'adventure',
+    featured: true
   },
   {
     id: '6',
-    title: 'Coast to Capital',
-    duration: '120 min',
-    genre: 'Travel',
+    title: 'Mount Kenya Expedition',
+    duration: '105 min',
+    genre: 'Adventure',
+    rating: 4.6,
+    year: 2023,
+    description: 'Daring mountain climbing adventure on Kenya\'s highest peak.',
+    thumbnail: 'photo-1605810230434-7631ac76ec81',
+    category: 'adventure',
+    featured: true
+  },
+
+  // Cartoon Category
+  {
+    id: '7',
+    title: 'Simba\'s Railway Journey',
+    duration: '75 min',
+    genre: 'Animation',
     rating: 4.9,
     year: 2024,
-    description: 'Journey from Mombasa to Nairobi showcasing Kenya\'s diverse landscapes.',
-    thumbnail: 'photo-1605810230434-7631ac76ec81',
-    category: 'local',
+    description: 'Animated adventure of animals traveling on the Kenya railway.',
+    thumbnail: 'photo-1526374965328-7f61d4dc18c5',
+    category: 'cartoon',
     featured: true
+  },
+  {
+    id: '8',
+    title: 'Kenya Kids Adventures',
+    duration: '60 min',
+    genre: 'Animation',
+    rating: 4.7,
+    year: 2023,
+    description: 'Fun animated stories for children about Kenyan culture.',
+    thumbnail: 'photo-1649972904349-6e44c42644a7',
+    category: 'cartoon',
+    featured: false
   }
 ];
 
@@ -109,11 +140,11 @@ export function ContentLibrary() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const categories = [
-    { id: 'all', name: 'All Content', count: sampleContent.length },
-    { id: 'movie', name: 'Movies', count: sampleContent.filter(c => c.category === 'movie').length },
-    { id: 'documentary', name: 'Documentaries', count: sampleContent.filter(c => c.category === 'documentary').length },
-    { id: 'series', name: 'Series', count: sampleContent.filter(c => c.category === 'series').length },
-    { id: 'local', name: 'Local Content', count: sampleContent.filter(c => c.category === 'local').length },
+    { id: 'all', name: 'All', count: sampleContent.length },
+    { id: 'romance', name: 'Romance', count: sampleContent.filter(c => c.category === 'romance').length },
+    { id: 'comedy', name: 'Comedy', count: sampleContent.filter(c => c.category === 'comedy').length },
+    { id: 'adventure', name: 'Adventure', count: sampleContent.filter(c => c.category === 'adventure').length },
+    { id: 'cartoon', name: 'Cartoon', count: sampleContent.filter(c => c.category === 'cartoon').length },
   ];
 
   const filteredContent = sampleContent.filter(item => {
