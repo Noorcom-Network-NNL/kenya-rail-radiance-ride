@@ -23,6 +23,7 @@ interface ContentItem {
   year: number;
   description: string;
   thumbnail: string;
+  videoUrl: string; // Add video URL field
   category: 'all' | 'romance' | 'comedy' | 'adventure' | 'cartoon';
   featured: boolean;
 }
@@ -38,6 +39,7 @@ const sampleContent: ContentItem[] = [
     year: 2024,
     description: 'A beautiful love story set against the stunning backdrop of Kenya\'s wildlife.',
     thumbnail: 'photo-1605810230434-7631ac76ec81',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     category: 'romance',
     featured: true
   },
@@ -50,6 +52,7 @@ const sampleContent: ContentItem[] = [
     year: 2023,
     description: 'Modern romance in the bustling streets of Nairobi.',
     thumbnail: 'photo-1526374965328-7f61d4dc18c5',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
     category: 'romance',
     featured: false
   },
@@ -64,6 +67,7 @@ const sampleContent: ContentItem[] = [
     year: 2024,
     description: 'Hilarious adventures aboard the Kenya railway system.',
     thumbnail: 'photo-1649972904349-6e44c42644a7',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
     category: 'comedy',
     featured: true
   },
@@ -76,6 +80,7 @@ const sampleContent: ContentItem[] = [
     year: 2023,
     description: 'A collection of the funniest moments from Kenya.',
     thumbnail: 'photo-1488590528505-98d2b5aba04b',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
     category: 'comedy',
     featured: false
   },
@@ -90,6 +95,7 @@ const sampleContent: ContentItem[] = [
     year: 2024,
     description: 'Thrilling adventures in the heart of the African wilderness.',
     thumbnail: 'photo-1531297484001-80022131f5a1',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
     category: 'adventure',
     featured: true
   },
@@ -102,6 +108,7 @@ const sampleContent: ContentItem[] = [
     year: 2023,
     description: 'Daring mountain climbing adventure on Kenya\'s highest peak.',
     thumbnail: 'photo-1605810230434-7631ac76ec81',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
     category: 'adventure',
     featured: true
   },
@@ -116,6 +123,7 @@ const sampleContent: ContentItem[] = [
     year: 2024,
     description: 'Animated adventure of animals traveling on the Kenya railway.',
     thumbnail: 'photo-1526374965328-7f61d4dc18c5',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
     category: 'cartoon',
     featured: true
   },
@@ -128,6 +136,7 @@ const sampleContent: ContentItem[] = [
     year: 2023,
     description: 'Fun animated stories for children about Kenyan culture.',
     thumbnail: 'photo-1649972904349-6e44c42644a7',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4',
     category: 'cartoon',
     featured: false
   }
@@ -163,6 +172,7 @@ export function ContentLibrary() {
         duration={selectedContent.duration}
         genre={selectedContent.genre}
         description={selectedContent.description}
+        videoUrl={selectedContent.videoUrl}
         onBack={() => setSelectedContent(null)}
       />
     );

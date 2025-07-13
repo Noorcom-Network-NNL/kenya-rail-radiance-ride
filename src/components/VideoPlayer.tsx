@@ -19,10 +19,11 @@ interface VideoPlayerProps {
   duration: string;
   genre: string;
   description?: string;
+  videoUrl?: string;
   onBack: () => void;
 }
 
-export function VideoPlayer({ title, duration, genre, description, onBack }: VideoPlayerProps) {
+export function VideoPlayer({ title, duration, genre, description, videoUrl, onBack }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [totalDuration, setTotalDuration] = useState(7200);
@@ -85,7 +86,7 @@ export function VideoPlayer({ title, duration, genre, description, onBack }: Vid
         <video
           ref={videoRef}
           className="absolute inset-0 w-full h-full object-contain"
-          src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          src={videoUrl || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"}
           onTimeUpdate={(e) => setCurrentTime(Math.floor(e.currentTarget.currentTime))}
           onLoadedMetadata={(e) => setTotalDuration(Math.floor(e.currentTarget.duration))}
           onEnded={() => setIsPlaying(false)}
