@@ -8,9 +8,13 @@ export interface VideoSource {
   description: string;
   thumbnail: string;
   videoUrl: string;
-  category: 'all' | 'romance' | 'comedy' | 'adventure' | 'cartoon';
+  category: 'all' | 'romance' | 'comedy' | 'adventure' | 'cartoon' | 'action' | 'drama' | 'documentary' | 'family';
   featured: boolean;
   provider: 'cloudflare';
+  tags: string[];
+  ageRating: 'G' | 'PG' | 'PG-13' | 'R' | 'NR';
+  language: string;
+  country: string;
 }
 
 export interface VideoConfig {
@@ -41,7 +45,11 @@ export const videoLibrary: VideoSource[] = [
     videoUrl: `${videoConfig.baseUrl}/ea95132c15732412d22c1476fa407617/manifest/video.m3u8`,
     category: 'romance',
     featured: true,
-    provider: 'cloudflare'
+    provider: 'cloudflare',
+    tags: ['wildlife', 'love story', 'kenya', 'nature'],
+    ageRating: 'PG',
+    language: 'English',
+    country: 'Kenya'
   },
   {
     id: 'nairobi-nights-002',
@@ -55,7 +63,11 @@ export const videoLibrary: VideoSource[] = [
     videoUrl: `${videoConfig.baseUrl}/b236bde30eb07b26b47148fd34e6121b/manifest/video.m3u8`,
     category: 'romance',
     featured: false,
-    provider: 'cloudflare'
+    provider: 'cloudflare',
+    tags: ['urban', 'modern', 'nairobi', 'city life'],
+    ageRating: 'PG-13',
+    language: 'Swahili',
+    country: 'Kenya'
   },
 
   // Comedy
@@ -71,7 +83,11 @@ export const videoLibrary: VideoSource[] = [
     videoUrl: `${videoConfig.baseUrl}/c347ade40eb17c36c47258gd45f2231c/manifest/video.m3u8`,
     category: 'comedy',
     featured: true,
-    provider: 'cloudflare'
+    provider: 'cloudflare',
+    tags: ['railway', 'train', 'humor', 'travel'],
+    ageRating: 'PG',
+    language: 'English',
+    country: 'Kenya'
   },
   {
     id: 'kenyan-laughs-004',
@@ -85,7 +101,11 @@ export const videoLibrary: VideoSource[] = [
     videoUrl: `${videoConfig.baseUrl}/d458bfe50fc28d47d58369he56g3342d/manifest/video.m3u8`,
     category: 'comedy',
     featured: false,
-    provider: 'cloudflare'
+    provider: 'cloudflare',
+    tags: ['compilation', 'humor', 'culture', 'entertainment'],
+    ageRating: 'PG',
+    language: 'Swahili',
+    country: 'Kenya'
   },
 
   // Adventure
@@ -101,7 +121,11 @@ export const videoLibrary: VideoSource[] = [
     videoUrl: `${videoConfig.baseUrl}/e569cfg60gd39e58e69480if67h4453e/manifest/video.m3u8`,
     category: 'adventure',
     featured: true,
-    provider: 'cloudflare'
+    provider: 'cloudflare',
+    tags: ['wilderness', 'safari', 'africa', 'exploration'],
+    ageRating: 'PG-13',
+    language: 'English',
+    country: 'Kenya'
   },
   {
     id: 'kilimanjaro-climb-006',
@@ -115,7 +139,11 @@ export const videoLibrary: VideoSource[] = [
     videoUrl: `${videoConfig.baseUrl}/f670dgh70he50f69f70591jg78i5564f/manifest/video.m3u8`,
     category: 'adventure',
     featured: true,
-    provider: 'cloudflare'
+    provider: 'cloudflare',
+    tags: ['mountain', 'climbing', 'extreme', 'sports'],
+    ageRating: 'PG-13',
+    language: 'English',
+    country: 'Kenya'
   },
 
   // Cartoon
@@ -131,7 +159,11 @@ export const videoLibrary: VideoSource[] = [
     videoUrl: `${videoConfig.baseUrl}/g781ehi80if61g80g81602kh89j6675g/manifest/video.m3u8`,
     category: 'cartoon',
     featured: true,
-    provider: 'cloudflare'
+    provider: 'cloudflare',
+    tags: ['animation', 'animals', 'railway', 'family'],
+    ageRating: 'G',
+    language: 'English',
+    country: 'Kenya'
   },
   {
     id: 'kenyan-kids-tales-008',
@@ -145,7 +177,91 @@ export const videoLibrary: VideoSource[] = [
     videoUrl: `${videoConfig.baseUrl}/h892fij90jg72h91h92713li90k7786h/manifest/video.m3u8`,
     category: 'cartoon',
     featured: false,
-    provider: 'cloudflare'
+    provider: 'cloudflare',
+    tags: ['kids', 'education', 'culture', 'stories'],
+    ageRating: 'G',
+    language: 'Swahili',
+    country: 'Kenya'
+  },
+
+  // Action Movies
+  {
+    id: 'action-thriller-009',
+    title: 'Mombasa Chase',
+    duration: '2h 5m',
+    genre: 'Action',
+    rating: 4.4,
+    year: 2024,
+    description: 'High-speed action thriller through the streets of Mombasa.',
+    thumbnail: 'photo-1531297484001-80022131f5a1',
+    videoUrl: `${videoConfig.baseUrl}/i903gik01kh83i02i03824mj01l8897i/manifest/video.m3u8`,
+    category: 'action',
+    featured: true,
+    provider: 'cloudflare',
+    tags: ['chase', 'mombasa', 'thriller', 'speed'],
+    ageRating: 'PG-13',
+    language: 'English',
+    country: 'Kenya'
+  },
+
+  // Drama
+  {
+    id: 'family-drama-010',
+    title: 'Heritage Stories',
+    duration: '1h 55m',
+    genre: 'Drama',
+    rating: 4.7,
+    year: 2023,
+    description: 'Emotional family drama exploring Kenyan traditions and heritage.',
+    thumbnail: 'photo-1605810230434-7631ac76ec81',
+    videoUrl: `${videoConfig.baseUrl}/j014hjl12li94j15j16935nk12m9908j/manifest/video.m3u8`,
+    category: 'drama',
+    featured: true,
+    provider: 'cloudflare',
+    tags: ['family', 'heritage', 'tradition', 'emotional'],
+    ageRating: 'PG',
+    language: 'Swahili',
+    country: 'Kenya'
+  },
+
+  // Documentary
+  {
+    id: 'railway-history-011',
+    title: 'Kenya Railway History',
+    duration: '1h 30m',
+    genre: 'Documentary',
+    rating: 4.8,
+    year: 2024,
+    description: 'Comprehensive documentary about the history and impact of Kenya Railway.',
+    thumbnail: 'photo-1649972904349-6e44c42644a7',
+    videoUrl: `${videoConfig.baseUrl}/k125ikm23mj05k26k27046ol23n0019k/manifest/video.m3u8`,
+    category: 'documentary',
+    featured: true,
+    provider: 'cloudflare',
+    tags: ['history', 'railway', 'documentary', 'educational'],
+    ageRating: 'G',
+    language: 'English',
+    country: 'Kenya'
+  },
+
+  // Family
+  {
+    id: 'family-journey-012',
+    title: 'Family Train Journey',
+    duration: '1h 40m',
+    genre: 'Family',
+    rating: 4.5,
+    year: 2024,
+    description: 'Heartwarming family movie about a railway journey across Kenya.',
+    thumbnail: 'photo-1526374965328-7f61d4dc18c5',
+    videoUrl: `${videoConfig.baseUrl}/l236jln34nk16l37l38157pm34o1120l/manifest/video.m3u8`,
+    category: 'family',
+    featured: false,
+    provider: 'cloudflare',
+    tags: ['family', 'journey', 'heartwarming', 'travel'],
+    ageRating: 'G',
+    language: 'English',
+    country: 'Kenya'
   }
 ];
 
@@ -154,11 +270,33 @@ export const getVideoById = (id: string): VideoSource | undefined => {
   return videoLibrary.find(video => video.id === id);
 };
 
-export const getVideosByCategory = (category: 'all' | 'romance' | 'comedy' | 'adventure' | 'cartoon'): VideoSource[] => {
+export const getVideosByCategory = (category: 'all' | 'romance' | 'comedy' | 'adventure' | 'cartoon' | 'action' | 'drama' | 'documentary' | 'family'): VideoSource[] => {
   if (category === 'all') {
     return videoLibrary;
   }
   return videoLibrary.filter(video => video.category === category);
+};
+
+export const getVideosByTags = (tags: string[]): VideoSource[] => {
+  return videoLibrary.filter(video => 
+    tags.some(tag => video.tags.some(videoTag => 
+      videoTag.toLowerCase().includes(tag.toLowerCase())
+    ))
+  );
+};
+
+export const getVideosByAgeRating = (rating: 'G' | 'PG' | 'PG-13' | 'R' | 'NR'): VideoSource[] => {
+  return videoLibrary.filter(video => video.ageRating === rating);
+};
+
+export const getVideosByLanguage = (language: string): VideoSource[] => {
+  return videoLibrary.filter(video => 
+    video.language.toLowerCase() === language.toLowerCase()
+  );
+};
+
+export const getVideosByRating = (minRating: number): VideoSource[] => {
+  return videoLibrary.filter(video => video.rating >= minRating);
 };
 
 export const getFeaturedVideos = (): VideoSource[] => {

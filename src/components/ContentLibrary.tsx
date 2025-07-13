@@ -13,7 +13,7 @@ import {
   List
 } from "lucide-react";
 import { VideoPlayer } from "./VideoPlayer";
-import { videoLibrary, getVideosByCategory, getFeaturedVideos, trackVideoView, type VideoSource } from "@/lib/videoService";
+import { videoLibrary, getVideosByCategory, getFeaturedVideos, trackVideoView, getVideosByTags, getVideosByAgeRating, getVideosByLanguage, getVideosByRating, type VideoSource } from "@/lib/videoService";
 
 // Using VideoSource from videoService
 type ContentItem = VideoSource;
@@ -21,8 +21,11 @@ type ContentItem = VideoSource;
 export function ContentLibrary() {
   const [selectedContent, setSelectedContent] = useState<ContentItem | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'romance' | 'comedy' | 'adventure' | 'cartoon'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'romance' | 'comedy' | 'adventure' | 'cartoon' | 'action' | 'drama' | 'documentary' | 'family'>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [selectedAgeRating, setSelectedAgeRating] = useState<string>('all');
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('all');
+  const [minRating, setMinRating] = useState<number>(0);
 
   // Handle video selection and tracking
   const handleVideoSelect = async (content: ContentItem) => {
@@ -36,13 +39,36 @@ export function ContentLibrary() {
     { id: 'comedy', name: 'Comedy', count: videoLibrary.filter(c => c.category === 'comedy').length },
     { id: 'adventure', name: 'Adventure', count: videoLibrary.filter(c => c.category === 'adventure').length },
     { id: 'cartoon', name: 'Cartoon', count: videoLibrary.filter(c => c.category === 'cartoon').length },
+    { id: 'action', name: 'Action', count: videoLibrary.filter(c => c.category === 'action').length },
+    { id: 'drama', name: 'Drama', count: videoLibrary.filter(c => c.category === 'drama').length },
+    { id: 'documentary', name: 'Documentary', count: videoLibrary.filter(c => c.category === 'documentary').length },
+    { id: 'family', name: 'Family', count: videoLibrary.filter(c => c.category === 'family').length },
   ];
 
-  // Filter content based on search and category
-  const allContent = getVideosByCategory(selectedCategory);
+  const ageRatings = ['all', 'G', 'PG', 'PG-13', 'R'];
+  const languages = ['all', 'English', 'Swahili'];
+
+  // Apply all filters
+  let allContent = getVideosByCategory(selectedCategory);
+  
+  // Filter by age rating
+  if (selectedAgeRating !== 'all') {
+    allContent = allContent.filter(video => video.ageRating === selectedAgeRating);
+  }
+  
+  // Filter by language
+  if (selectedLanguage !== 'all') {
+    allContent = allContent.filter(video => video.language === selectedLanguage);
+  }
+  
+  // Filter by minimum rating
+  allContent = allContent.filter(video => video.rating >= minRating);
+
+  // Filter by search term (title, description, tags)
   const filteredContent: ContentItem[] = allContent.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.description.toLowerCase().includes(searchTerm.toLowerCase());
+                         item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         item.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
     return matchesSearch;
   });
 
@@ -93,6 +119,68 @@ export function ContentLibrary() {
             </div>
           </div>
 
+          {/* Advanced Filters */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
+            {/* Age Rating Filter */}
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">Age Rating</label>
+              <select 
+                value={selectedAgeRating} 
+                onChange={(e) => setSelectedAgeRating(e.target.value)}
+                className="w-full p-2 border rounded-md bg-background text-foreground"
+              >
+                {ageRatings.map(rating => (
+                  <option key={rating} value={rating}>{rating === 'all' ? 'All Ratings' : rating}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Language Filter */}
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">Language</label>
+              <select 
+                value={selectedLanguage} 
+                onChange={(e) => setSelectedLanguage(e.target.value)}
+                className="w-full p-2 border rounded-md bg-background text-foreground"
+              >
+                {languages.map(lang => (
+                  <option key={lang} value={lang}>{lang === 'all' ? 'All Languages' : lang}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Rating Filter */}
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">Min Rating: {minRating.toFixed(1)}</label>
+              <input
+                type="range"
+                min="0"
+                max="5"
+                step="0.1"
+                value={minRating}
+                onChange={(e) => setMinRating(parseFloat(e.target.value))}
+                className="w-full"
+              />
+            </div>
+
+            {/* Clear Filters */}
+            <div className="flex items-end">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSelectedCategory('all');
+                  setSelectedAgeRating('all');
+                  setSelectedLanguage('all');
+                  setMinRating(0);
+                  setSearchTerm('');
+                }}
+                className="w-full"
+              >
+                Clear Filters
+              </Button>
+            </div>
+          </div>
+
           {/* Category Filters */}
           <div className="flex flex-wrap gap-2 mt-4">
             {categories.map((category) => (
@@ -100,7 +188,7 @@ export function ContentLibrary() {
                 key={category.id}
                 variant={selectedCategory === category.id ? 'premium' : 'outline'}
                 size="sm"
-                onClick={() => setSelectedCategory(category.id as 'all' | 'romance' | 'comedy' | 'adventure' | 'cartoon')}
+                onClick={() => setSelectedCategory(category.id as typeof selectedCategory)}
                 className="text-sm"
               >
                 {category.name} ({category.count})
