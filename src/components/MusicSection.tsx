@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Music, Loader2, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { fetchJamendoTracks, jamendoGenres, type JamendoTrack } from "@/lib/jamendo";
-import { fetchFreesoundByGenre, getConfiguredApiKey, fetchFreesoundByGenreWithConfig, genreTrackLimits } from "@/lib/freesound";
+import { fetchFreesoundByGenre, getConfiguredApiKey, fetchFreesoundByGenreWithConfig, genreTrackLimits, fetchFreesoundByPlaylist } from "@/lib/freesound";
 import { MusicPlayer } from "./MusicPlayer";
 import { TrackList } from "./TrackList";
 import { FreesoundConfig } from "./FreesoundConfig";
@@ -80,11 +80,35 @@ export function MusicSection() {
     setCurrentTrack(track);
   };
 
+  const loadPlaylistTracks = async (playlistName: string) => {
+    setLoading(true);
+    try {
+      const fetchedTracks = await fetchFreesoundByPlaylist(playlistName, 25);
+      setTracks(fetchedTracks);
+      
+      if (fetchedTracks.length > 0) {
+        toast({
+          title: `Loaded ${playlistName}`,
+          description: `${fetchedTracks.length} curated tracks ready to play`,
+        });
+        // Auto-play first track
+        setCurrentTrack(fetchedTracks[0]);
+      }
+    } catch (error) {
+      console.error('Playlist loading error:', error);
+      toast({
+        title: "Error loading playlist",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handlePlaylistSelect = (playlistName: string) => {
-    toast({
-      title: `Playing ${playlistName}`,
-      description: "Custom playlists coming soon...",
-    });
+    setSelectedGenre(''); // Clear genre selection
+    loadPlaylistTracks(playlistName);
   };
 
   return (

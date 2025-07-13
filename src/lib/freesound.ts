@@ -98,6 +98,22 @@ export const freesoundGenreQueries = {
   'folk': 'folk music traditional acoustic world music african traditional east africa kenya tanzania uganda ethiopia'
 };
 
+// Curated playlist queries for specific collections
+export const freesoundPlaylistQueries = {
+  'Journey Classics': 'classical orchestral symphony travel journey peaceful',
+  'African Rhythms': 'african traditional drums percussion rhythm afrobeat kwaito amapiano',
+  'Relaxing Melodies': 'ambient peaceful calm relaxing meditation soft piano',
+  'Upbeat Travels': 'upbeat energetic travel adventure happy positive rhythm',
+  'Gospel Selections': 'gospel spiritual choir hymn praise worship christian',
+  'Contemporary Hits': 'contemporary modern pop electronic dance current',
+  'Traditional Kenyan': 'kenya kenyan traditional benga taarab folk african heritage',
+  'International Favorites': 'world music international global multicultural diverse',
+  'Peaceful Moments': 'peaceful calm quiet serene meditation ambient nature',
+  'Energetic Beats': 'energetic dance electronic beat rhythm upbeat tempo',
+  'Cultural Heritage': 'traditional cultural heritage folk world ethnic ancient',
+  'Modern Mix': 'modern contemporary electronic pop rock fusion current'
+};
+
 // Genre-specific track limits as requested
 export const genreTrackLimits = {
   'all': 100,
@@ -136,4 +152,19 @@ export async function fetchFreesoundByGenreWithConfig(
   limit: number = 20
 ): Promise<any[]> {
   return await fetchFreesoundByGenre(genre, FREESOUND_CONFIG.apiKey, limit);
+}
+
+// Fetch tracks for curated playlists
+export async function fetchFreesoundByPlaylist(
+  playlistName: string,
+  limit: number = 25
+): Promise<any[]> {
+  const query = freesoundPlaylistQueries[playlistName as keyof typeof freesoundPlaylistQueries] || 'music';
+  
+  return await searchFreesound({
+    query,
+    filter: 'duration:[30.0 TO 600.0]',
+    sort: 'rating_desc', // Use rating for curated playlists
+    page_size: limit
+  }, FREESOUND_CONFIG.apiKey);
 }
