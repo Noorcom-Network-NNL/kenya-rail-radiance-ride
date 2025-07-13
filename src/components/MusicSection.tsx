@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Music, Loader2, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { fetchJamendoTracks, jamendoGenres, type JamendoTrack } from "@/lib/jamendo";
-import { fetchFreesoundByGenre, getConfiguredApiKey, fetchFreesoundByGenreWithConfig } from "@/lib/freesound";
+import { fetchFreesoundByGenre, getConfiguredApiKey, fetchFreesoundByGenreWithConfig, genreTrackLimits } from "@/lib/freesound";
 import { MusicPlayer } from "./MusicPlayer";
 import { TrackList } from "./TrackList";
 import { FreesoundConfig } from "./FreesoundConfig";

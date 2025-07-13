@@ -89,13 +89,22 @@ export async function searchFreesound(
   }
 }
 
-// Predefined search queries for different genres
+// Enhanced search queries for different genres with East African and international focus
 export const freesoundGenreQueries = {
-  'all': 'music',
-  'classical': 'classical music orchestra symphony',
-  'popular': 'pop music beat rhythm',
-  'rock': 'rock music guitar electric',
-  'folk': 'folk music traditional acoustic'
+  'all': 'music song melody rhythm',
+  'classical': 'classical music symphony orchestra piano violin cello chamber string quartet concerto sonata',
+  'popular': 'pop music beat rhythm contemporary afrobeat african kwaito amapiano bongo flava taarab benga',
+  'rock': 'rock music guitar electric bass drums metal alternative indie punk classic rock',
+  'folk': 'folk music traditional acoustic world music african traditional east africa kenya tanzania uganda ethiopia'
+};
+
+// Genre-specific track limits as requested
+export const genreTrackLimits = {
+  'all': 100,
+  'classical': 80,
+  'popular': 120,
+  'rock': 90,
+  'folk': 60
 };
 
 export async function fetchFreesoundByGenre(
