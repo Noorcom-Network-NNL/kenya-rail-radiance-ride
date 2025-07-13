@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Music } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const musicGenres = [
   { id: 'all', name: 'All Music', count: '300+ Songs' },
@@ -26,6 +27,22 @@ const playlists = [
 ];
 
 export function MusicSection() {
+  const { toast } = useToast();
+
+  const handleBrowseGenre = (genreName: string) => {
+    toast({
+      title: `Opening ${genreName}`,
+      description: `Loading music library for ${genreName}...`,
+    });
+  };
+
+  const handlePlaylistSelect = (playlistName: string) => {
+    toast({
+      title: `Playing ${playlistName}`,
+      description: "Starting playlist...",
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
@@ -39,7 +56,12 @@ export function MusicSection() {
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground text-sm mb-3">{genre.count}</p>
-              <Button variant="outline" size="sm" className="w-full">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full"
+                onClick={() => handleBrowseGenre(genre.name)}
+              >
                 Browse
               </Button>
             </CardContent>
@@ -60,6 +82,7 @@ export function MusicSection() {
                 variant="entertainment"
                 size="sm"
                 className="h-auto py-3 px-4 text-left justify-start"
+                onClick={() => handlePlaylistSelect(playlist)}
               >
                 {playlist}
               </Button>
