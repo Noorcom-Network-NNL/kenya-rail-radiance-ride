@@ -6,12 +6,12 @@ import { Play, Pause, SkipBack, SkipForward, Volume2, Heart, HeartOff } from "lu
 import { useAuth } from '@/contexts/AuthContext';
 import { addToListeningHistory, addToFavorites, removeFromFavorites } from '@/lib/firebaseService';
 import { useToast } from '@/hooks/use-toast';
-import type { JamendoTrack } from "@/lib/jamendo";
+import type { MusicTrack } from "@/lib/musicService";
 
 interface MusicPlayerProps {
-  track: JamendoTrack | null;
-  playlist: JamendoTrack[];
-  onTrackChange?: (track: JamendoTrack) => void;
+  track: MusicTrack | null;
+  playlist: MusicTrack[];
+  onTrackChange?: (track: MusicTrack) => void;
 }
 
 export function MusicPlayer({ track, playlist, onTrackChange }: MusicPlayerProps) {
@@ -30,7 +30,7 @@ export function MusicPlayer({ track, playlist, onTrackChange }: MusicPlayerProps
     if (!audio || !track || !user) return;
 
     const handleEnded = async () => {
-      await addToListeningHistory(user.uid, track.id, track.name, track.artist_name, track.duration);
+      await addToListeningHistory(user.uid, track.id, track.title, track.artist, track.duration);
     };
 
     audio.addEventListener('ended', handleEnded);
@@ -138,21 +138,21 @@ export function MusicPlayer({ track, playlist, onTrackChange }: MusicPlayerProps
       <CardContent className="p-6">
         <audio
           ref={audioRef}
-          src={track.audio}
+          src={track.audioUrl}
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
         />
         
         <div className="flex items-center gap-4 mb-4">
           <img 
-            src={track.image} 
-            alt={track.name}
+            src={track.imageUrl} 
+            alt={track.title}
             className="w-16 h-16 rounded-lg object-cover"
           />
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold truncate">{track.name}</h3>
-            <p className="text-sm text-muted-foreground truncate">{track.artist_name}</p>
-            <p className="text-xs text-muted-foreground truncate">{track.album_name}</p>
+            <h3 className="font-semibold truncate">{track.title}</h3>
+            <p className="text-sm text-muted-foreground truncate">{track.artist}</p>
+            <p className="text-xs text-muted-foreground truncate">{track.album}</p>
           </div>
           {user && (
             <Button

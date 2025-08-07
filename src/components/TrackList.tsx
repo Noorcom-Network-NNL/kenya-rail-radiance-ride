@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Play, Clock } from "lucide-react";
-import type { JamendoTrack } from "@/lib/jamendo";
+import type { MusicTrack } from "@/lib/musicService";
 
 interface TrackListProps {
-  tracks: JamendoTrack[];
-  currentTrack?: JamendoTrack | null;
-  onTrackSelect: (track: JamendoTrack) => void;
+  tracks: MusicTrack[];
+  currentTrack?: MusicTrack | null;
+  onTrackSelect: (track: MusicTrack) => void;
   loading?: boolean;
 }
 
@@ -60,15 +60,15 @@ export function TrackList({ tracks, currentTrack, onTrackSelect, loading }: Trac
               </div>
               
               <img 
-                src={track.image} 
-                alt={track.name}
+                src={track.imageUrl} 
+                alt={track.title}
                 className="w-12 h-12 rounded object-cover"
               />
               
               <div className="flex-1 min-w-0">
-                <h4 className="font-medium truncate">{track.name}</h4>
-                <p className="text-sm text-muted-foreground truncate">{track.artist_name}</p>
-                <p className="text-xs text-muted-foreground truncate">{track.album_name}</p>
+                <h4 className="font-medium truncate">{track.title}</h4>
+                <p className="text-sm text-muted-foreground truncate">{track.artist}</p>
+                <p className="text-xs text-muted-foreground truncate">{track.album}</p>
               </div>
               
               <div className="flex items-center gap-2 text-sm text-muted-foreground">

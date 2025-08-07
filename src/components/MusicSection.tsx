@@ -3,80 +3,81 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Music, Loader2, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { fetchJamendoTracks, jamendoGenres, type JamendoTrack } from "@/lib/jamendo";
-import { fetchFreesoundByGenre, getConfiguredApiKey, fetchFreesoundByGenreWithConfig, genreTrackLimits, fetchFreesoundByPlaylist } from "@/lib/freesound";
+import { 
+  getTracksByPlaylist, 
+  musicPlaylists, 
+  type MusicTrack, 
+  getFeaturedTracks,
+  searchTracks 
+} from "@/lib/musicService";
 import { MusicPlayer } from "./MusicPlayer";
 import { TrackList } from "./TrackList";
 import { FreesoundConfig } from "./FreesoundConfig";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const musicGenres = [
-  { id: 'all', name: 'All Music', count: '300+ Songs' },
-  { id: 'classical', name: 'Classical', count: '80 Songs' },
-  { id: 'popular', name: 'Popular', count: '120 Songs' },
-  { id: 'rock', name: 'Rock and Roll', count: '90 Songs' },
-  { id: 'folk', name: 'Folk Customs', count: '60 Songs' }
+  { id: 'all', name: 'All Music', count: '40+ Songs' },
+  { id: 'popular', name: 'Popular Playlist', count: '10 Songs' },
+  { id: 'classical', name: 'Classical Playlist', count: '10 Songs' },
+  { id: 'rock', name: 'Rock and Roll Playlist', count: '10 Songs' },
+  { id: 'folk', name: 'Folk Customs Playlist', count: '10 Songs' }
 ];
 
 const playlists = [
-  'Journey Classics',
-  'African Rhythms',
-  'Relaxing Melodies',
-  'Upbeat Travels',
-  'Gospel Selections',
-  'Contemporary Hits',
-  'Traditional Kenyan',
-  'International Favorites',
-  'Peaceful Moments',
-  'Energetic Beats',
-  'Cultural Heritage',
-  'Modern Mix'
+  'Popular Playlist',
+  'Classical Playlist', 
+  'Rock and Roll Playlist',
+  'Folk Customs Playlist'
 ];
 
 export function MusicSection() {
   const { toast } = useToast();
-  const [tracks, setTracks] = useState<JamendoTrack[]>([]);
-  const [currentTrack, setCurrentTrack] = useState<JamendoTrack | null>(null);
+  const [tracks, setTracks] = useState<MusicTrack[]>([]);
+  const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
   const [loading, setLoading] = useState(false);
   const [selectedGenre, setSelectedGenre] = useState<string>('all');
   const [activeSource, setActiveSource] = useState<'freesound'>('freesound');
 
   useEffect(() => {
-    // Auto-load real tracks on component mount
-    loadFreesoundTracks('all');
+    // Auto-load all tracks on component mount
+    loadMusicTracks('all');
   }, []);
 
-  const loadFreesoundTracks = async (genre: string) => {
+  const loadMusicTracks = async (genreId: string) => {
     setLoading(true);
     try {
-      const trackLimit = genreTrackLimits[genre as keyof typeof genreTrackLimits] || 20;
-      let fetchedTracks = await fetchFreesoundByGenreWithConfig(genre, trackLimit);
+      let loadedTracks: MusicTrack[] = [];
       
-      // Fallback: if no tracks found, try with just "music" query
-      if (fetchedTracks.length === 0) {
-        console.log(`No tracks found for ${genre}, trying fallback...`);
-        fetchedTracks = await fetchFreesoundByGenreWithConfig('all', Math.min(trackLimit, 20));
+      if (genreId === 'all') {
+        loadedTracks = getFeaturedTracks();
+      } else {
+        loadedTracks = getTracksByPlaylist(genreId);
       }
       
-      setTracks(fetchedTracks);
+      setTracks(loadedTracks);
       
-      if (fetchedTracks.length > 0) {
+      if (loadedTracks.length > 0) {
         toast({
-          title: `Loaded ${fetchedTracks.length} real tracks`,
-          description: `${genre === 'all' ? 'All music' : genre} - East African & International`,
+          title: `Loaded ${loadedTracks.length} tracks`,
+          description: `${genreId === 'all' ? 'Featured music' : musicPlaylists[genreId as keyof typeof musicPlaylists]} from 2025 collection`,
         });
+        
+        // Auto-select first track if none selected
+        if (!currentTrack) {
+          setCurrentTrack(loadedTracks[0]);
+        }
       } else {
         toast({
           title: "No tracks available",
-          description: "Please check your internet connection",
+          description: "Selected playlist is empty",
           variant: "destructive",
         });
       }
     } catch (error) {
-      console.error('Freesound API error:', error);
+      console.error('Music loading error:', error);
       toast({
         title: "Error loading tracks",
-        description: "Please check your connection and try again.",
+        description: "Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -86,62 +87,32 @@ export function MusicSection() {
 
   const handleBrowseGenre = (genreId: string, genreName: string) => {
     setSelectedGenre(genreId);
-    loadFreesoundTracks(genreId);
+    loadMusicTracks(genreId);
   };
 
-  const handleTrackSelect = (track: JamendoTrack) => {
+  const handleTrackSelect = (track: MusicTrack) => {
     setCurrentTrack(track);
   };
 
-  const loadPlaylistTracks = async (playlistName: string) => {
-    setLoading(true);
-    try {
-      let fetchedTracks = await fetchFreesoundByPlaylist(playlistName, 25);
-      
-      // Fallback: if playlist has no tracks, try general music search
-      if (fetchedTracks.length === 0) {
-        console.log(`No tracks found for playlist ${playlistName}, trying fallback...`);
-        fetchedTracks = await fetchFreesoundByGenreWithConfig('all', 15);
-      }
-      
-      setTracks(fetchedTracks);
-      
-      if (fetchedTracks.length > 0) {
-        toast({
-          title: `Loaded ${playlistName}`,
-          description: `${fetchedTracks.length} curated tracks ready to play`,
-        });
-        // Auto-play first track
-        setCurrentTrack(fetchedTracks[0]);
-      } else {
-        toast({
-          title: "No tracks available",
-          description: "Please check your internet connection",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error('Playlist loading error:', error);
-      toast({
-        title: "Error loading playlist",
-        description: "Please try again later.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handlePlaylistSelect = (playlistName: string) => {
-    setSelectedGenre(''); // Clear genre selection
-    loadPlaylistTracks(playlistName);
+    // Map playlist names to genre IDs
+    const playlistMap: { [key: string]: string } = {
+      'Popular Playlist': 'popular',
+      'Classical Playlist': 'classical', 
+      'Rock and Roll Playlist': 'rock',
+      'Folk Customs Playlist': 'folk'
+    };
+    
+    const genreId = playlistMap[playlistName] || 'popular';
+    setSelectedGenre(genreId);
+    loadMusicTracks(genreId);
   };
 
   return (
     <div className="space-y-6">
       <div className="p-4 bg-gradient-elegant rounded-lg">
-        <h2 className="text-xl font-semibold mb-2">🎵 Real Music Library</h2>
-        <p className="text-muted-foreground">East African & International music collection from Freesound</p>
+        <h2 className="text-xl font-semibold mb-2">🎵 2025 Music Library</h2>
+        <p className="text-muted-foreground">Curated playlists featuring Popular, Classical, Rock and Roll, and Folk Customs</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
